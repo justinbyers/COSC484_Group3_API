@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
 const app = express();
+app.use(cors());
 
 const config = ({
     host: 'us-cdbr-iron-east-05.cleardb.net',
@@ -9,13 +10,10 @@ const config = ({
     password: '40e7fd8d',
     database: 'heroku_01f0321449bfb48'
 });
-const interval = 50000;
 
 var con = mysql.createConnection(config);
 var users, employees, balances;
 var current_orders, ingredient_status, login;
-
-app.use(cors());
 
 try {
     con.connect();
@@ -56,67 +54,98 @@ try {
         console.log(login);
     });
 
-     console.log("Success -- Refreshing every " + interval + " ms");
-     console.log("(10000ms = 10 seconds)")
-
+    con.end();
+    console.log("Success");
 }
 catch (err) {
     console.log("Err: " + err);
 }
 
+//returns an all in 1 json with every table's content
 app.get('/', (req, res) => {
     res.send(JSON.stringify(current_orders)
         + JSON.stringify(ingredient_status)
         + JSON.stringify(login));
 });
 
+//returns an all in 1 json but for the obsolete tables (testing purposes)
 app.get('/extra', (req, res) => {
     res.send(JSON.stringify(users)
         + JSON.stringify(employees)
         + JSON.stringify(balances));
 });
 
-app.listen(process.env.PORT || 80);
-
-setInterval(function () {
-    console.log("------------REFRESHED ");
-    refresh(con);
-}, interval);
-
-function refresh(connection){
-    connection.query("SELECT * FROM users ", function (err, result, fields) {
-        if (err) throw err;
-        users = result;
-        //console.log(users);
-    });
-
-    connection.query("SELECT * FROM employees ", function (err, result, fields) {
-        if (err) throw err;
-        employees = result;
-        //console.log(employees);
-    });
-
-    connection.query("SELECT * FROM balances ", function (err, result, fields) {
+app.get('/balances', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT * FROM balances ", function (err, result, fields) {
         if (err) throw err;
         balances = result;
-        //console.log(balances);
+        console.log(balances);
+        res.send(JSON.stringify(balances));
     });
+    con.end();
+});
 
-    connection.query("SELECT * FROM current_orders ", function (err, result, fields) {
+app.get('/current_orders', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT * FROM current_orders ", function (err, result, fields) {
         if (err) throw err;
         current_orders = result;
-        //console.log(current_orders);
+        console.log(current_orders);
+        res.send(JSON.stringify(current_orders));
     });
+    con.end();
+});
 
-    connection.query("SELECT * FROM ingredient_status ", function (err, result, fields) {
+app.get('/employees', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT * FROM employees ", function (err, result, fields) {
+        if (err) throw err;
+        employees = result;
+        console.log(employees);
+        res.send(JSON.stringify(employees));
+    });
+    con.end();
+});
+
+app.get('/ingredient_status', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT * FROM ingredient_status ", function (err, result, fields) {
         if (err) throw err;
         ingredient_status = result;
-        //console.log(ingredient_status);
+        console.log(ingredient_status);
+        res.send(JSON.stringify(ingredient_status));
     });
+    con.end();
+});
 
-    connection.query("SELECT * FROM login ", function (err, result, fields) {
+app.get('/login', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT * FROM login ", function (err, result, fields) {
         if (err) throw err;
         login = result;
-        //console.log(login);
+        console.log(login);
+        res.send(JSON.stringify(login));
     });
+    con.end();
+});
+
+app.get('/users', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT * FROM users ", function (err, result, fields) {
+        if (err) throw err;
+        users = result;
+        console.log(users);
+        res.send(JSON.stringify(users));
+    });
+    con.end();
+});
+
+app.listen(process.env.PORT || 80);
+
+function createConnection(connection){
+    connection = mysql.createConnection(config);
+    connection.connect();
+    console.log("Connection made");
+    return connection;
 }
