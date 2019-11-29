@@ -9,6 +9,7 @@ const config = ({
     password: '40e7fd8d',
     database: 'heroku_01f0321449bfb48'
 });
+const interval = 50000;
 
 var con = mysql.createConnection(config);
 var users, employees, balances;
@@ -55,7 +56,9 @@ try {
         console.log(login);
     });
 
-    console.log("Success");
+     console.log("Success -- Refreshing every " + interval + " ms");
+     console.log("(10000ms = 10 seconds)")
+
 }
 catch (err) {
     console.log("Err: " + err);
@@ -75,9 +78,45 @@ app.get('/extra', (req, res) => {
 
 app.listen(process.env.PORT || 80);
 
-con.on('error', function (err) {
-    if (err.code === 'PROTOCOL_CONNECTION_LOST')
-        console.log("Connection lost but nbd");
-    else
-        console.log("Other error: " + err.stack);
-});
+setInterval(function () {
+    console.log("------------REFRESHED ");
+    refresh(con);
+}, interval);
+
+function refresh(connection){
+    connection.query("SELECT * FROM users ", function (err, result, fields) {
+        if (err) throw err;
+        users = result;
+        //console.log(users);
+    });
+
+    connection.query("SELECT * FROM employees ", function (err, result, fields) {
+        if (err) throw err;
+        employees = result;
+        //console.log(employees);
+    });
+
+    connection.query("SELECT * FROM balances ", function (err, result, fields) {
+        if (err) throw err;
+        balances = result;
+        //console.log(balances);
+    });
+
+    connection.query("SELECT * FROM current_orders ", function (err, result, fields) {
+        if (err) throw err;
+        current_orders = result;
+        //console.log(current_orders);
+    });
+
+    connection.query("SELECT * FROM ingredient_status ", function (err, result, fields) {
+        if (err) throw err;
+        ingredient_status = result;
+        //console.log(ingredient_status);
+    });
+
+    connection.query("SELECT * FROM login ", function (err, result, fields) {
+        if (err) throw err;
+        login = result;
+        //console.log(login);
+    });
+}
