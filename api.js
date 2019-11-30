@@ -14,6 +14,7 @@ const config = ({
 var con = mysql.createConnection(config);
 var users, employees, balances;
 var current_orders, ingredient_status, login;
+var validIds;
 
 try {
     con.connect();
@@ -131,6 +132,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
+    // console.log("hello: " + req.query.);
     con = createConnection(con);
     con.query("SELECT * FROM users ", function (err, result, fields) {
         if (err) throw err;
@@ -141,9 +143,30 @@ app.get('/users', (req, res) => {
     con.end();
 });
 
+app.get('/testids', (req, res) => {
+
+    con = createConnection(con);
+    con.query("SELECT id FROM users ", function (err, result, fields) {
+        if (err) throw err;
+        validIds = result;
+        console.log(validIds);
+        validIds = JSON.stringify(validIds);
+        console.log(validIds);
+        validIds = validIds.replace(/{"id":/g, '');
+        validIds = validIds.replace(/},/g, ',');
+        validIds = validIds.replace(/}/g, '');
+        validIds = validIds.replace(/\[/g, '');
+        validIds = validIds.replace(/\]/g, '');
+        validIds = validIds.split(',');
+        console.log(validIds);
+        res.send(validIds);
+    });
+    con.end();
+});
+
 app.listen(process.env.PORT || 80);
 
-function createConnection(connection){
+function createConnection(connection) {
     connection = mysql.createConnection(config);
     connection.connect();
     console.log("Connection made");
