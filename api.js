@@ -146,7 +146,7 @@ app.get('/users', (req, res) => {
 app.get('/testids', (req, res) => {
 
     con = createConnection(con);
-    con.query("SELECT id FROM users ", function (err, result, fields) {
+    con.query("SELECT ID FROM login ", function (err, result, fields) {
         if (err) throw err;
         validIds = result;
         console.log(validIds);
