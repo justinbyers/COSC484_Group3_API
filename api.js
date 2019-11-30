@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const url = require('url');
 const app = express();
 app.use(cors());
 
@@ -130,9 +131,10 @@ app.get('/login', (req, res) => {
     });
     con.end();
 });
-
+//fetch('https://wv-food-order-api.herokuapp.com/testids)
 app.get('/users', (req, res) => {
-    // console.log("hello: " + req.query.);
+    var urlcontents = url.parse(req.url, true);
+    console.log("query is: " + urlcontents.query.query);
     con = createConnection(con);
     con.query("SELECT * FROM users ", function (err, result, fields) {
         if (err) throw err;
@@ -143,21 +145,47 @@ app.get('/users', (req, res) => {
     con.end();
 });
 
+// app.get('/testids', (req, res) => {
+
+//     con = createConnection(con);
+//     con.query("SELECT ID FROM login ", function (err, result, fields) {
+//         if (err) throw err;
+//         validIds = result;
+//         console.log(validIds);
+//         validIds = JSON.stringify(validIds);
+//         console.log(validIds);
+//         validIds = validIds.replace(/{"ID":/g, '');
+//         validIds = validIds.replace(/},/g, ',');
+//         validIds = validIds.replace(/}/g, '');
+//         validIds = validIds.replace(/\[/g, '');
+//         validIds = validIds.replace(/\]/g, '');
+//         validIds = validIds.split(',');
+//         console.log(validIds);
+//         res.send(validIds);
+//     });
+//     con.end();
+// });
+
 app.get('/testids', (req, res) => {
 
     con = createConnection(con);
-    con.query("SELECT ID FROM login ", function (err, result, fields) {
+    con.query("SELECT ID, Type FROM login ", function (err, result, fields) {
         if (err) throw err;
         validIds = result;
         console.log(validIds);
         validIds = JSON.stringify(validIds);
         console.log(validIds);
+
         validIds = validIds.replace(/{"ID":/g, '');
+        validIds = validIds.replace(/\"T/g, 'T');
+        validIds = validIds.replace(/\"/g, '');
         validIds = validIds.replace(/},/g, ',');
         validIds = validIds.replace(/}/g, '');
         validIds = validIds.replace(/\[/g, '');
         validIds = validIds.replace(/\]/g, '');
+        validIds = validIds.replace(/"/g, '');
         validIds = validIds.split(',');
+        
         console.log(validIds);
         res.send(validIds);
     });
