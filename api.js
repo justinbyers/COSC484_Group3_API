@@ -152,7 +152,7 @@ app.get('/testids', (req, res) => {
         console.log(validIds);
         validIds = JSON.stringify(validIds);
         console.log(validIds);
-        validIds = validIds.replace(/{"id":/g, '');
+        validIds = validIds.replace(/{"ID":/g, '');
         validIds = validIds.replace(/},/g, ',');
         validIds = validIds.replace(/}/g, '');
         validIds = validIds.replace(/\[/g, '');
