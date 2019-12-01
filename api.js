@@ -202,7 +202,7 @@ app.get('/testCustids', (req, res) => {
     con.end();
 });
 
-pp.get('/testEmpids', (req, res) => {
+app.get('/testEmpids', (req, res) => {
 
     con = createConnection(con);
     con.query("SELECT ID FROM login WHERE type = 0 ", function (err, result, fields) {
