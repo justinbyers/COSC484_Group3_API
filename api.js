@@ -112,9 +112,18 @@ app.get('/employees', (req, res) => {
 
 app.get('/ingredient_status', (req, res) => {
     con = createConnection(con);
-    con.query("SELECT * FROM ingredient_status ", function (err, result, fields) {
+    con.query("SELECT Status FROM ingredient_status", function (err, result, fields) {
         if (err) throw err;
         ingredient_status = result;
+        ingredient_status = JSON.stringify(ingredient_status);
+        ingredient_status = ingredient_status.replace(/{"Status":/g, '');
+        ingredient_status = ingredient_status.replace(/\"/g, '');
+        ingredient_status = ingredient_status.replace(/},/g, ',');
+        ingredient_status = ingredient_status.replace(/}/g, '');
+        ingredient_status = ingredient_status.replace(/\[/g, '');
+        ingredient_status = ingredient_status.replace(/\]/g, '');
+        ingredient_status = ingredient_status.replace(/"/g, '');
+        ingredient_status = ingredient_status.split(',');
         console.log(ingredient_status);
         res.send(JSON.stringify(ingredient_status));
     });
@@ -193,18 +202,17 @@ app.get('/testCustids', (req, res) => {
     con.end();
 });
 
-app.get('/testEmpids', (req, res) => {
+app.get('/getOOSIngredients', (req, res) => {
 
     con = createConnection(con);
-    con.query("SELECT ID, Type FROM login WHERE type = 0 ", function (err, result, fields) {
+    con.query("SELECT Ingr_Name FROM ingredient_status WHERE Status = 0 ", function (err, result, fields) {
         if (err) throw err;
         validIds = result;
         console.log(validIds);
         validIds = JSON.stringify(validIds);
         console.log(validIds);
 
-        validIds = validIds.replace(/{"ID":/g, '');
-        validIds = validIds.replace(/"Type":/g, '');
+        validIds = validIds.replace(/{"Ingr_Name":/g, '');
         validIds = validIds.replace(/\"T/g, 'T');
         validIds = validIds.replace(/\"/g, '');
         validIds = validIds.replace(/},/g, ',');
