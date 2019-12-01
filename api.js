@@ -166,10 +166,37 @@ app.get('/users', (req, res) => {
 //     con.end();
 // });
 
-app.get('/testids', (req, res) => {
+app.get('/testCustids', (req, res) => {
 
     con = createConnection(con);
-    con.query("SELECT ID, Type FROM login ", function (err, result, fields) {
+    con.query("SELECT ID, Type FROM login WHERE type = 1 ", function (err, result, fields) {
+        if (err) throw err;
+        validIds = result;
+        console.log(validIds);
+        validIds = JSON.stringify(validIds);
+        console.log(validIds);
+
+        validIds = validIds.replace(/{"ID":/g, '');
+        validIds = validIds.replace(/"Type":/g, '');
+        validIds = validIds.replace(/\"T/g, 'T');
+        validIds = validIds.replace(/\"/g, '');
+        validIds = validIds.replace(/},/g, ',');
+        validIds = validIds.replace(/}/g, '');
+        validIds = validIds.replace(/\[/g, '');
+        validIds = validIds.replace(/\]/g, '');
+        validIds = validIds.replace(/"/g, '');
+        validIds = validIds.split(',');
+        
+        console.log(validIds);
+        res.send(validIds);
+    });
+    con.end();
+});
+
+app.get('/testEmpids', (req, res) => {
+
+    con = createConnection(con);
+    con.query("SELECT ID, Type FROM login WHERE type = 0 ", function (err, result, fields) {
         if (err) throw err;
         validIds = result;
         console.log(validIds);
