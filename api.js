@@ -351,6 +351,17 @@ app.get('/pancakeOrder', (req, res) => {
     con.end();
 });
 
+app.get('/OrderNumber', (req, res) => {
+    con = createConnection(con);
+    con.query("SELECT max(Order_Num) from current_orders ", function (err, result, fields) {
+        if (err) throw err;
+        console.log(result);
+        res.send(JSON.stringify(result));
+    });
+    con.end();
+});
+
+
 app.listen(process.env.PORT || 9000);
 
 
