@@ -294,17 +294,17 @@ app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_
     // console.log("aaa\n" + reqSauces + "\n" + reqProtein + "\n" + reqTopping + "\n" + reqSeasoning);
 
     var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
-        + "(`Order_Num`, `Customer_ID`, `Pasta_Type`, `Sauce`, `Pasta_Ingredients`) VALUES";
+        + "(`Order_Num`, `Customer_ID`, `Pasta_Type`, `Sauce`, `Pasta_Ingredients`) VALUES ";
 
-    var combinedQuery = insertIntoCurrentOrders + "('" + Math.floor(Math.random()*100000) + "', '" + id + "', '" + pasta
+    insertIntoCurrentOrders = + "('" + Math.floor(Math.random() * 100000) + "', '" + id + "', '" + pasta
         + "', '" + reqSauces + "', '" + reqProtein + ", " + reqTopping + ", " + reqSeasoning + "')";
 
-    console.log("query: \n" + combinedQuery);
+    console.log("query: \n" + insertIntoCurrentOrders);
 
     // console.log(id);
 
     con = createConnection(con);
-    con.query(combinedQuery, function (err, result, fields) {
+    con.query(insertIntoCurrentOrders, function (err, result, fields) {
         if (err) throw err;
         //users = result;
         console.log(result);
@@ -314,27 +314,41 @@ app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_
 });
 
 
+///pancakeOrder?pc=4&sugar=1&berries=1&wh_cream=1&id=635111
+app.get('/pancakeOrder', (req, res) => {
+    var urldata = url.parse(req.url, true);
 
-app.get('/order_breakfast', (req, res) => {
-    // var urlcontents = url.parse(req.url, true);
-    // // console.log("query is: " + urlcontents.query.sauces);
-    // var sauces = urlcontents.query.sauces;
-    // var protein = urlcontents.query.protein;
-    // var topping = urlcontents.query.topping;
-    // var seasoning = urlcontents.query.seasoning;
-    // var pasta = urlcontents.query.pasta;
-    // var id = urlcontents.query.id;
+    var pc = urldata.query.pc;
+    var sugar = urldata.query.sugar;
+    var berries = urldata.query.berries;
+    var wh_cream = urldata.query.wh_cream;
+    var id = urldata.query.id;
 
-    // console.log("Query is: " + sauces + " " + protein + " " + topping + " " + seasoning + " " + pasta + " " + id);
+    var reqIngredients = '';
 
-    // con = createConnection(con);
-    // con.query("INSERT ROW * FROM users ", function (err, result, fields) {
-    //     if (err) throw err;
-    //     users = result;
-    //     console.log(users);
-    //     res.send(JSON.stringify(users));
-    // });
-    // con.end();
+    if (sugar == 1)
+        reqIngredients += "Sugar, ";
+    if (berries == 1)
+        reqIngredients += "Berries, ";
+    if (wh_cream == 1)
+        reqIngredients += "Whipped Cream, ";
+
+    reqIngredients = reqIngredients.substring(0, reqIngredients.length - 2);
+
+    var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
+        + "(`Order_Num`, `Customer_ID`, `Pancake_Toppings`) VALUES ";
+
+    insertIntoCurrentOrders += "('" + Math.floor(Math.random() * 100000)
+        + "', '" + id + "', '" + reqIngredients + "')";
+
+    con = createConnection(con);
+    con.query(insertIntoCurrentOrders, function (err, result, fields) {
+        if (err) throw err;
+        //users = result;
+        console.log(result);
+        res.send(("success"));
+    });
+    con.end();
 });
 
 app.listen(process.env.PORT || 9000);
