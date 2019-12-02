@@ -241,7 +241,8 @@ ID - id
  `Pasta_Ingredients`, `Pancake_Quantity`, `Fried_Egg_Quantity`, `Omlette`, `Scrambled_Egg`,
   `Egg_Ingredients`, `Bacon_Quantity`, `Sausage_Quantity`) VALUES ('133', 'NULL', 'Penne', 'Marinara', 'Mushroom, Onion', '4', '8', '0', '1', 'Mushroom', '2', '3' );
 */
-app.get('/order', (req, res) => { //http://localhost:9000/order?sauces=1_1_1&protein=1_1_1_1_1&topping=1_1_1_1_1&seasoning=1_1_1_1_1&pasta=penne&id=5345345
+//https://wv-food-order-api.herokuapp.com/pastaOrder?sauces=1_1_1&protein=1_1_1_1_1&topping=1_1_1_1_1&seasoning=1_1_1_1_1&pasta=bowtie&id=635111
+app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_1&protein=1_1_1_1_1&topping=1_1_1_1_1&seasoning=1_1_1_1_1&pasta=penne&id=5345345
     var urldata = url.parse(req.url, true);
 
     var sauces = urldata.query.sauces;
@@ -268,22 +269,22 @@ app.get('/order', (req, res) => { //http://localhost:9000/order?sauces=1_1_1&pro
     topping = topping.split("_");
     seasoning = seasoning.split("_");
 
-    for (var i = 0; i < sauces.length; i++) 
+    for (var i = 0; i < sauces.length; i++)
         if (sauces[i] == 1)
             reqSauces += sauceNames[i] + ", ";
-    
-    for (var i = 0; i < protein.length; i++) 
+
+    for (var i = 0; i < protein.length; i++)
         if (protein[i] == 1)
             reqProtein += proteinNames[i] + ", ";
-    
-    for (var i = 0; i < topping.length; i++) 
+
+    for (var i = 0; i < topping.length; i++)
         if (topping[i] == 1)
             reqTopping += toppingNames[i] + ", ";
-    
-    for (var i = 0; i < seasoning.length; i++) 
+
+    for (var i = 0; i < seasoning.length; i++)
         if (seasoning[i] == 1)
             reqSeasoning += seasoningNames[i] + ", ";
-    
+
 
     reqSauces = reqSauces.substring(0, reqSauces.length - 2);
     reqProtein = reqProtein.substring(0, reqProtein.length - 2);
@@ -295,7 +296,7 @@ app.get('/order', (req, res) => { //http://localhost:9000/order?sauces=1_1_1&pro
     var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
         + "(`Order_Num`, `Customer_ID`, `Pasta_Type`, `Sauce`, `Pasta_Ingredients`) VALUES";
 
-    var combinedQuery = insertIntoCurrentOrders + "('" + Math.floor(Math.random() * 10000) + "', '" + id + "', '" + pasta
+    var combinedQuery = insertIntoCurrentOrders + "('" + Math.floor(Math.random()*100000) + "', '" + id + "', '" + pasta
         + "', '" + reqSauces + "', '" + reqProtein + ", " + reqTopping + ", " + reqSeasoning + "')";
 
     console.log("query: \n" + combinedQuery);
@@ -307,10 +308,12 @@ app.get('/order', (req, res) => { //http://localhost:9000/order?sauces=1_1_1&pro
         if (err) throw err;
         //users = result;
         console.log(result);
-        res.send(JSON.stringify("Succ"));
+        res.send(("success"));
     });
     con.end();
 });
+
+
 
 app.get('/order_breakfast', (req, res) => {
     // var urlcontents = url.parse(req.url, true);
@@ -335,6 +338,7 @@ app.get('/order_breakfast', (req, res) => {
 });
 
 app.listen(process.env.PORT || 9000);
+
 
 function createConnection(connection) {
     connection = mysql.createConnection(config);
