@@ -251,6 +251,9 @@ app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_
     var seasoning = urldata.query.seasoning;
     var pasta = urldata.query.pasta;
     var id = urldata.query.id;
+    var orderNum = urldata.query.orderNum;
+
+    console.log("order num: " + orderNum);
 
     var sauceNames = ['pesto', 'marinara', 'alfredo'];
     var proteinNames = ['chicken', 'shrimp', 'meatball', 'sausage', 'crab'];
@@ -262,7 +265,7 @@ app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_
     var reqTopping = '';
     var reqSeasoning = '';
 
-    console.log("Query is: " + sauces + " " + protein + " " + topping + " " + seasoning + " " + pasta + " " + id);
+    console.log("Query is: " + sauces + " " + protein + " " + topping + " " + seasoning + " " + pasta + " " + id + " " + orderNum);
 
     sauces = sauces.split("_");
     protein = protein.split("_");
@@ -296,10 +299,10 @@ app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_
     var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
         + "(`Order_Num`, `Customer_ID`, `Pasta_Type`, `Sauce`, `Pasta_Ingredients`) VALUES ";
 
-    insertIntoCurrentOrders = + "('" + Math.floor(Math.random() * 100000) + "', '" + id + "', '" + pasta
+    insertIntoCurrentOrders += "(" + orderNum + ", '" + id + "', '" + pasta
         + "', '" + reqSauces + "', '" + reqProtein + ", " + reqTopping + ", " + reqSeasoning + "')";
 
-    console.log("query: \n" + insertIntoCurrentOrders);
+    console.log("query: " + insertIntoCurrentOrders);
 
     // console.log(id);
 
@@ -308,7 +311,7 @@ app.get('/pastaOrder', (req, res) => { //http://localhost:9000/order?sauces=1_1_
         if (err) throw err;
         //users = result;
         console.log(result);
-        res.send(("success"));
+        res.send(("Your order has been successfully received!"));
     });
     con.end();
 });
@@ -323,6 +326,7 @@ app.get('/pancakeOrder', (req, res) => {
     var berries = urldata.query.berries;
     var wh_cream = urldata.query.wh_cream;
     var id = urldata.query.id;
+    var orderNum = urldata.query.orderNum;
 
     var reqIngredients = '';
 
@@ -338,28 +342,28 @@ app.get('/pancakeOrder', (req, res) => {
     var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
         + "(`Order_Num`, `Customer_ID`, `Pancake_Toppings`) VALUES ";
 
-    insertIntoCurrentOrders += "('" + Math.floor(Math.random() * 100000)
-        + "', '" + id + "', '" + reqIngredients + "')";
+    insertIntoCurrentOrders += "(" + orderNum
+        + ", '" + id + "', '" + reqIngredients + "')";
 
     con = createConnection(con);
     con.query(insertIntoCurrentOrders, function (err, result, fields) {
         if (err) throw err;
         //users = result;
         console.log(result);
-        res.send(("success"));
+        res.send(("Your order has been successfully received!"));
     });
     con.end();
 });
 
-app.get('/OrderNumber', (req, res) => {
-    con = createConnection(con);
-    con.query("SELECT max(Order_Num) from current_orders ", function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.send(JSON.stringify(result));
-    });
-    con.end();
-});
+// app.get('/OrderNumber', (req, res) => {
+//     con = createConnection(con);
+//     con.query("SELECT max(Order_Num) from current_orders ", function (err, result, fields) {
+//         if (err) throw err;
+//         console.log(result);
+//         res.send(JSON.stringify(result));
+//     });
+//     con.end();
+// });
 
 
 app.listen(process.env.PORT || 9000);
