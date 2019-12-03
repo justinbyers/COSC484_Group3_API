@@ -355,15 +355,72 @@ app.get('/pancakeOrder', (req, res) => {
     con.end();
 });
 
-// app.get('/OrderNumber', (req, res) => {
-//     con = createConnection(con);
-//     con.query("SELECT max(Order_Num) from current_orders ", function (err, result, fields) {
-//         if (err) throw err;
-//         console.log(result);
-//         res.send(JSON.stringify(result));
-//     });
-//     con.end();
-// });
+//eggOrder?style=Omelette&redpep=1&salt=1&sage=1&garlic=1&id=635111&orderNum=97108
+app.get('/eggOrder', (req, res) => {
+    var urldata = url.parse(req.url, true);
+
+    var style = urldata.query.sty; e;
+    var redpep = urldata.query.redpep;
+    var salt = urldata.query.salt;
+    var sage = urldata.query.sage;
+    var garlic = urldata.query.garlic;
+    var id = urldata.query.id;
+    var orderNum = urldata.query.orderNum;
+
+    var reqIngredients = '';
+
+    if (redpep == 1)
+        reqIngredients += "Red Pepper, ";
+    if (salt == 1)
+        reqIngredients += "Salt, ";
+    if (sage == 1)
+        reqIngredients += "Sage, ";
+    if (garlic == 1)
+        reqIngredients += "Garlic, ";
+
+    reqIngredients = reqIngredients.substring(0, reqIngredients.length - 2);
+
+
+    var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
+        + "(`Order_Num`, `Customer_ID`, `Egg_Type`, `Egg_Ingredients`) VALUES ";
+
+    insertIntoCurrentOrders += "(" + orderNum
+        + ", '" + id + "', '" + style + "', '" + reqIngredients + "')";
+
+    con = createConnection(con);
+    con.query(insertIntoCurrentOrders, function (err, result, fields) {
+        if (err) throw err;
+        //users = result;
+        console.log(result);
+        res.send(("Your order has been successfully received!"));
+    });
+    con.end();
+});
+
+
+//https://wv-food-order-api.herokuapp.com/baconOrder?type=Smoked&id=635111&orderNum=47340
+app.get('/baconOrder', (req, res) => {
+    var urldata = url.parse(req.url, true);
+
+    var type = urldata.query.type;
+    var id = urldata.query.id;
+    var orderNum = urldata.query.orderNum;
+
+    var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
+        + "(`Order_Num`, `Customer_ID`, `Bacon_Type`) VALUES ";
+
+    insertIntoCurrentOrders += "(" + orderNum
+        + ", '" + id + "', '" + type + "')";
+
+    con = createConnection(con);
+    con.query(insertIntoCurrentOrders, function (err, result, fields) {
+        if (err) throw err;
+        //users = result;
+        console.log(result);
+        res.send(("Your order has been successfully received!"));
+    });
+    con.end();
+});
 
 
 app.listen(process.env.PORT || 9000);
