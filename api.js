@@ -359,7 +359,7 @@ app.get('/pancakeOrder', (req, res) => {
 app.get('/eggOrder', (req, res) => {
     var urldata = url.parse(req.url, true);
 
-    var style = urldata.query.sty; e;
+    var style = urldata.query.style;
     var redpep = urldata.query.redpep;
     var salt = urldata.query.salt;
     var sage = urldata.query.sage;
