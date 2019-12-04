@@ -340,10 +340,10 @@ app.get('/pancakeOrder', (req, res) => {
     reqIngredients = reqIngredients.substring(0, reqIngredients.length - 2);
 
     var insertIntoCurrentOrders = "INSERT INTO `Current_Orders` "
-        + "(`Order_Num`, `Customer_ID`, `Pancake_Toppings`) VALUES ";
+        + "(`Order_Num`, `Customer_ID`, `Pancake_Quantity`, `Pancake_Toppings`) VALUES ";
 
     insertIntoCurrentOrders += "(" + orderNum
-        + ", '" + id + "', '" + reqIngredients + "')";
+        + ", '" + id + "', '" + pc + "', '" + reqIngredients + "')";
 
     con = createConnection(con);
     con.query(insertIntoCurrentOrders, function (err, result, fields) {
